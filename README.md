@@ -214,5 +214,69 @@ leaflet() |>
   addSearchOSM() |>
   addMouseCoordinates() |>
   addFullscreenControl() |>
-  hideGroup("Registros de presencia") 
+  hideGroup("Registros de presencia")
+# 6.Tabla de riqueza de especies de mamíferos en regiones socioeconómicas
+
+```{r}
+#| label: carga-tabla
+#| warning: false
+#| code-fold: true 
+#| message: false
+
+riqueza_especies_mamiferos |>
+  dplyr::select(region, riqueza_especies_mamiferos) |>
+  datatable(
+    colnames = c("Nombre de la región socioeconómica", "Riqueza de especies de mamíferos"),
+    options = list(
+      pageLength = 5,
+      language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')
+    ))
+
+```
+
+# 7.Gráficos estadísticos:
+
+# 7.1.Gráfico de barras de riqueza de especies de mamíferos en regiones socioeconómicas
+
+```{r}
+#| label: carga-grafico-riqueza
+#| warning: false
+#| code-fold: true 
+#| message: false
+grafico_mamiferos_region <-
+riqueza_especies_mamiferos |>
+  ggplot(aes(x = reorder(region,-riqueza_especies_mamiferos), y = riqueza_especies_mamiferos)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  ggtitle("Riqueza de mamíferos en regiones socioeconómicas") +
+  xlab("Regiones socioeconómicas") +
+  ylab("Riqueza de mamíferos")+
+  labs(caption = "Fuente: Ministerio de Planificación (MIDELAN)") +
+  theme_gray() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggplotly(grafico_mamiferos_region)
+```
+
+# 7.2.Gráfico de barras de cantidad de registros de presencia de Bradypus variegatus (perezoso de tres dedos) por año, desde 2000 hasta 2023.
+
+```{r}
+#| label: carga-grafico-cantidad
+#| warning: false
+#| code-fold: true 
+#| message: false
+
+perezosos_3dedos <-
+mamiferos_union_region |>
+  filter(year >= 2000) |>
+  filter(species == "Bradypus variegatus") |>
+  ggplot(aes(x = year)) +
+  geom_bar() +
+  ggtitle("Registro de presencia del Bradypus variegatus (perezoso de tres dedos) 
+desde el año 2000 hasta el 2023.") +
+  xlab("Año") +
+  ylab("Cantidad de perezosos de tres dedos") +
+  theme_gray()
+
+ggplotly(perezosos_3dedos)
+
 ```
